@@ -5,12 +5,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { addFeed } from "../utils/feedSlice";
 import UserCard from "./UserCard";
 
-function Feed() {
+// Premium Feed UI (Matches the glassmorphic DevTinder theme)
+// Centered • Soft gradient shadows • Smooth spacing
+
+export default function Feed() {
   const dispatch = useDispatch();
   const feed = useSelector((store) => store.feed);
 
   const getFeed = async () => {
-    // FIX: only skip if feed already loaded
     if (feed && feed.length > 0) return;
 
     try {
@@ -18,7 +20,7 @@ function Feed() {
         withCredentials: true,
       });
 
-      dispatch(addFeed(res.data.data)); // correct
+      dispatch(addFeed(res.data.data));
     } catch (err) {
       console.log(err);
     }
@@ -26,19 +28,26 @@ function Feed() {
 
   useEffect(() => {
     getFeed();
-  }, []); // FIX: run only once
+  }, []);
 
   return (
-    <>
-      {feed &&
-        feed.length > 0 &&
-        feed.map((item) => (
-          <div key={item._id} className="flex justify-center my-10">
-            <UserCard user={item} />
+    <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black py-10 px-4">
+      <div className="max-w-2xl mx-auto space-y-10">
+        {feed && feed.length > 0 ? (
+          feed.map((user) => (
+            <div
+              key={user._id}
+              className="flex justify-center w-full animate-fadeIn"
+            >
+              <UserCard user={user} />
+            </div>
+          ))
+        ) : (
+          <div className="text-center text-gray-400 text-lg pt-20 opacity-70">
+            Loading recommendations...
           </div>
-        ))}
-    </>
+        )}
+      </div>
+    </div>
   );
 }
-
-export default Feed;

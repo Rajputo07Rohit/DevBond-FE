@@ -5,6 +5,9 @@ import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 
+// Premium DevTinder Edit Profile Page
+// Dark • Glassmorphic • Gradient Buttons • Live Preview
+
 const EditProfile = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName || "");
   const [lastName, setLastName] = useState(user.lastName || "");
@@ -29,7 +32,6 @@ const EditProfile = ({ user }) => {
 
       dispatch(addUser(res?.data?.data));
       setShowToast(true);
-
       setTimeout(() => setShowToast(false), 3000);
     } catch (err) {
       setError(err?.response?.data || "Something went wrong");
@@ -37,115 +39,103 @@ const EditProfile = ({ user }) => {
   };
 
   return (
-    <>
-      <div className="flex justify-center my-10 gap-8 flex-wrap">
-        {/* Form Card */}
-        <div className="card bg-base-300 w-96 shadow-sm">
-          <div className="card-body">
-            <h2 className="text-2xl font-bold text-center">Edit Profile ✍️</h2>
+    <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black py-14 px-4">
+      <div className="flex justify-center gap-10 flex-wrap max-w-6xl mx-auto">
+        {/* FORM CARD */}
+        <div className="w-96 backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl p-6">
+          <h2 className="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
+            Edit Profile ✍️
+          </h2>
 
-            {/* FIRST NAME */}
-            <fieldset className="fieldset my-2">
-              <legend className="fieldset-legend">First Name</legend>
-              <input
-                type="text"
-                value={firstName}
-                className="input rounded-md"
-                onChange={(e) => setFirstName(e.target.value)}
-              />
-            </fieldset>
+          {/* FIRST NAME */}
+          <label className="block mb-3 text-gray-300 text-sm">First Name</label>
+          <input
+            type="text"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            className="input w-full rounded-xl bg-neutral-800 border-neutral-700 text-gray-200 mb-4"
+          />
 
-            {/* LAST NAME */}
-            <fieldset className="fieldset my-2">
-              <legend className="fieldset-legend">Last Name</legend>
-              <input
-                type="text"
-                value={lastName}
-                className="input rounded-md"
-                onChange={(e) => setLastName(e.target.value)}
-              />
-            </fieldset>
+          {/* LAST NAME */}
+          <label className="block mb-3 text-gray-300 text-sm">Last Name</label>
+          <input
+            type="text"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            className="input w-full rounded-xl bg-neutral-800 border-neutral-700 text-gray-200 mb-4"
+          />
 
-            {/* AGE */}
-            <fieldset className="fieldset my-2">
-              <legend className="fieldset-legend">Age</legend>
-              <input
-                type="number"
-                value={age}
-                className="input rounded-md"
-                onChange={(e) => setAge(e.target.value)}
-              />
-            </fieldset>
+          {/* AGE */}
+          <label className="block mb-3 text-gray-300 text-sm">Age</label>
+          <input
+            type="number"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            className="input w-full rounded-xl bg-neutral-800 border-neutral-700 text-gray-200 mb-4"
+          />
 
-            {/* GENDER DROPDOWN */}
-            <fieldset className="fieldset my-2">
-              <legend className="fieldset-legend">Gender</legend>
-              <select
-                value={gender}
-                className="select select-bordered rounded-md"
-                onChange={(e) => setGender(e.target.value)}
-              >
-                <option disabled value="">
-                  Select gender
-                </option>
-                <option value="Male">male ♂️</option>
-                <option value="Female">female ♀️</option>
-              </select>
-            </fieldset>
+          {/* GENDER */}
+          <label className="block mb-3 text-gray-300 text-sm">Gender</label>
+          <select
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+            className="select select-bordered w-full rounded-xl bg-neutral-800 border-neutral-700 text-gray-200 mb-4"
+          >
+            <option disabled value="">
+              Select gender
+            </option>
+            <option value="male">Male ♂️</option>
+            <option value="female">Female ♀️</option>
+          </select>
 
-            {/* PHOTO URL */}
-            <fieldset className="fieldset my-2">
-              <legend className="fieldset-legend">Photo URL</legend>
-              <input
-                type="text"
-                value={photoUrl}
-                className="input rounded-md"
-                onChange={(e) => setPhotoUrl(e.target.value)}
-              />
-            </fieldset>
+          {/* PHOTO URL */}
+          <label className="block mb-3 text-gray-300 text-sm">Photo URL</label>
+          <input
+            type="text"
+            value={photoUrl}
+            onChange={(e) => setPhotoUrl(e.target.value)}
+            className="input w-full rounded-xl bg-neutral-800 border-neutral-700 text-gray-200 mb-4"
+          />
 
-            {/* ABOUT - TEXTAREA */}
-            <fieldset className="fieldset my-2">
-              <legend className="fieldset-legend">About</legend>
-              <textarea
-                value={about}
-                rows={4}
-                className="textarea textarea-bordered rounded-md"
-                placeholder="Write about yourself..."
-                onChange={(e) => setAbout(e.target.value)}
-              />
-            </fieldset>
+          {/* ABOUT */}
+          <label className="block mb-3 text-gray-300 text-sm">About</label>
+          <textarea
+            value={about}
+            onChange={(e) => setAbout(e.target.value)}
+            rows={4}
+            className="textarea w-full rounded-xl bg-neutral-800 border-neutral-700 text-gray-200 mb-4"
+            placeholder="Write about yourself..."
+          />
 
-            {/* Error message */}
-            <p className="text-red-600 text-sm text-center">{error}</p>
+          {/* ERROR */}
+          {error && (
+            <p className="text-red-400 text-sm text-center mb-2">{error}</p>
+          )}
 
-            {/* Save Button */}
-            <div className="card-actions justify-center">
-              <button
-                className="btn btn-primary rounded-xl"
-                onClick={saveProfile}
-              >
-                Save Profile
-              </button>
-            </div>
-          </div>
+          {/* SAVE BUTTON */}
+          <button
+            onClick={saveProfile}
+            className="btn w-full rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 border-none text-white hover:opacity-90"
+          >
+            Save Profile
+          </button>
         </div>
 
-        {/* Live Profile Preview */}
+        {/* LIVE PREVIEW */}
         <UserCard
           user={{ firstName, lastName, photoUrl, age, gender, about }}
         />
       </div>
 
-      {/* Toast message */}
+      {/* TOAST */}
       {showToast && (
-        <div className="toast toast-top toast-center">
-          <div className="alert alert-success">
-            <span>Profile saved successfully.</span>
+        <div className="toast toast-top toast-center mt-14">
+          <div className="alert alert-success rounded-xl bg-green-500 text-white shadow-lg">
+            <span>Profile saved successfully ✔️</span>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
