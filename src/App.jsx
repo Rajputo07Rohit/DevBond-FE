@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Body from "./components/Body";
 import Login from "./components/Login";
@@ -11,12 +10,12 @@ function App() {
   return (
     <>
       <Provider store={appStore}>
-        <BrowserRouter basename="/">
+        <BrowserRouter>
           <Routes>
             <Route path="/" element={<Body />}>
-              <Route path="/login" element={<Login />} />
-              <Route path="/feed" element={<Feed />} />
-              <Route path="/profile" element={<Profile />} />
+              <Route index element={<Feed />} /> {/* show Feed on "/" */}
+              <Route path="login" element={<Login />} />
+              <Route path="profile" element={<Profile />} />
             </Route>
           </Routes>
         </BrowserRouter>

@@ -13,7 +13,9 @@ function Body() {
   const userData = useSelector((store) => store.user);
 
   const fetchUser = async () => {
-    if (userData) return;
+    // FIX: only skip if user already loaded
+    if (userData && Object.keys(userData).length > 0) return;
+
     try {
       const res = await axios.get(BASE_URL + "/profile/view", {
         withCredentials: true,
@@ -21,8 +23,7 @@ function Body() {
 
       dispatch(addUser(res.data));
     } catch (err) {
-      if (err.status === 401) navigate("/login");
-      // console.log(err);
+      if (err.response?.status === 401) navigate("/login");
     }
   };
 
