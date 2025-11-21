@@ -8,8 +8,6 @@ import appStore from "./utils/appStore";
 import Feed from "./components/Feed";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
       <Provider store={appStore}>
