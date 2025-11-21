@@ -13,6 +13,7 @@ const EditProfile = ({ user }) => {
   const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
   const [about, setAbout] = useState(user.about);
   const [error, setError] = useState("");
+  const [showToast, setShowToast] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -33,105 +34,120 @@ const EditProfile = ({ user }) => {
       );
 
       dispatch(addUser(res?.data?.data));
+      setShowToast(true);
+
+      setTimeout(() => {
+        setShowToast(false);
+      }, 3000);
     } catch (err) {
       setError(err?.response?.data);
     }
   };
   return (
-    <div className="flex justify-center my-10">
-      <div className=" flex justify-center mx-10 ">
-        <div className="card bg-base-300 w-96 shadow-sm">
-          <div className="card-body">
-            {/* Title */}
-            <h2 className="text-2xl font-bold text-center text-base-content">
-              Edit Profile ✍️
-            </h2>
-            <h2 className="card-title justify-center"></h2>
-            <div>
-              <fieldset className="fieldset my-2">
-                <legend className="fieldset-legend">First Name</legend>
-                <input
-                  type="text"
-                  value={firstName}
-                  className="input rounded-md"
-                  placeholder="Type here"
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-              </fieldset>
+    <>
+      {" "}
+      <div className="flex justify-center my-10">
+        <div className=" flex justify-center mx-10 ">
+          <div className="card bg-base-300 w-96 shadow-sm">
+            <div className="card-body">
+              {/* Title */}
+              <h2 className="text-2xl font-bold text-center text-base-content">
+                Edit Profile ✍️
+              </h2>
+              <h2 className="card-title justify-center"></h2>
+              <div>
+                <fieldset className="fieldset my-2">
+                  <legend className="fieldset-legend">First Name</legend>
+                  <input
+                    type="text"
+                    value={firstName}
+                    className="input rounded-md"
+                    placeholder="Type here"
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                </fieldset>
 
-              <fieldset className="fieldset ">
-                <legend className="fieldset-legend">Last Name</legend>
-                <input
-                  type="text"
-                  value={lastName}
-                  className="input rounded-md"
-                  placeholder="Type here"
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </fieldset>
+                <fieldset className="fieldset ">
+                  <legend className="fieldset-legend">Last Name</legend>
+                  <input
+                    type="text"
+                    value={lastName}
+                    className="input rounded-md"
+                    placeholder="Type here"
+                    onChange={(e) => setLastName(e.target.value)}
+                  />
+                </fieldset>
 
-              <fieldset className="fieldset ">
-                <legend className="fieldset-legend">Age</legend>
-                <input
-                  type="text"
-                  value={age}
-                  className="input rounded-md"
-                  placeholder="Type here"
-                  onChange={(e) => setAge(e.target.value)}
-                />
-              </fieldset>
+                <fieldset className="fieldset ">
+                  <legend className="fieldset-legend">Age</legend>
+                  <input
+                    type="text"
+                    value={age}
+                    className="input rounded-md"
+                    placeholder="Type here"
+                    onChange={(e) => setAge(e.target.value)}
+                  />
+                </fieldset>
 
-              <fieldset className="fieldset ">
-                <legend className="fieldset-legend">Gender</legend>
-                <input
-                  type="text"
-                  value={gender}
-                  className="input rounded-md"
-                  placeholder="Type here"
-                  onChange={(e) => setGender(e.target.value)}
-                />
-              </fieldset>
+                <fieldset className="fieldset ">
+                  <legend className="fieldset-legend">Gender</legend>
+                  <input
+                    type="text"
+                    value={gender}
+                    className="input rounded-md"
+                    placeholder="Type here"
+                    onChange={(e) => setGender(e.target.value)}
+                  />
+                </fieldset>
 
-              <fieldset className="fieldset ">
-                <legend className="fieldset-legend">Photo-Url</legend>
-                <input
-                  type="text"
-                  value={photoUrl}
-                  className="input rounded-md"
-                  placeholder="Type here"
-                  onChange={(e) => setPhotoUrl(e.target.value)}
-                />
-              </fieldset>
+                <fieldset className="fieldset ">
+                  <legend className="fieldset-legend">Photo-Url</legend>
+                  <input
+                    type="text"
+                    value={photoUrl}
+                    className="input rounded-md"
+                    placeholder="Type here"
+                    onChange={(e) => setPhotoUrl(e.target.value)}
+                  />
+                </fieldset>
 
-              <fieldset className="fieldset ">
-                <legend className="fieldset-legend">About</legend>
-                <input
-                  type="text"
-                  value={about}
-                  className="input rounded-md"
-                  placeholder="Type here"
-                  onChange={(e) => setAbout(e.target.value)}
-                />
-              </fieldset>
-            </div>
-            <p className="text-red-600 font-light  text-sm">{error}</p>
-            <div className="card-actions justify-center">
-              <button
-                className="btn btn-primary my-2 rounded-xl"
-                onClick={saveProfile}
-              >
-                Save Profile
-              </button>
+                <fieldset className="fieldset ">
+                  <legend className="fieldset-legend">About</legend>
+                  <input
+                    type="text"
+                    value={about}
+                    className="input rounded-md"
+                    placeholder="Type here"
+                    onChange={(e) => setAbout(e.target.value)}
+                  />
+                </fieldset>
+              </div>
+              <p className="text-red-600 font-light  text-sm">{error}</p>
+              <div className="card-actions justify-center">
+                <button
+                  className="btn btn-primary my-2 rounded-xl"
+                  onClick={saveProfile}
+                >
+                  Save Profile
+                </button>
+              </div>
             </div>
           </div>
         </div>
+        <div>
+          <UserCard
+            user={{ firstName, lastName, photoUrl, age, gender, about }}
+          />
+        </div>
       </div>
-      <div>
-        <UserCard
-          user={{ firstName, lastName, photoUrl, age, gender, about }}
-        />
-      </div>
-    </div>
+      {showToast && (
+        <div className="toast toast-top toast-center">
+          <div className="alert alert-success">
+            <span>Profile savedsuccessfully.</span>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
