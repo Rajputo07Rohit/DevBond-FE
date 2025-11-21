@@ -44,7 +44,7 @@ export default function Login() {
         {/* Logo + Heading */}
         <div className="text-center mb-6">
           <div className="text-4xl mb-2 font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-            DevTinder
+            DevBond
           </div>
           <p className="text-sm text-gray-400">
             Find developers. Build connections.

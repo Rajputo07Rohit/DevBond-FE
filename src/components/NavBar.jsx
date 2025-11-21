@@ -30,7 +30,7 @@ export default function NavBar() {
             to="/"
             className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent tracking-wide"
           >
-            DevTinder
+            DevBond
           </Link>
         </div>
 
