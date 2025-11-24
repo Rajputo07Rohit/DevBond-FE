@@ -74,6 +74,14 @@ export default function NavBar() {
                   </Link>
                 </li>
                 <li>
+                  <Link
+                    to="/request"
+                    className="text-gray-200 hover:text-purple-400"
+                  >
+                    Connection Request
+                  </Link>
+                </li>
+                <li>
                   <a
                     onClick={handleLogout}
                     className="text-red-400 hover:text-red-300"
