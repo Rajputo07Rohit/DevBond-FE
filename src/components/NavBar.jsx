@@ -66,9 +66,12 @@ export default function NavBar() {
                   </Link>
                 </li>
                 <li>
-                  <a className="text-gray-200 hover:text-purple-400">
-                    Settings
-                  </a>
+                  <Link
+                    to="/connection"
+                    className="text-gray-200 hover:text-purple-400"
+                  >
+                    Connection
+                  </Link>
                 </li>
                 <li>
                   <a
