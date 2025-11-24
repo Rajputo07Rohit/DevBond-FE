@@ -21,6 +21,17 @@ export default function Request() {
     } catch (err) {}
   };
 
+  const reviewRequest = async (status, _id) => {
+    console.log("clicl", status, _id);
+    try {
+      const res = await axios.post(
+        BASE_URL + `/request/review/${status}/${_id}`,
+        {},
+        { withCredentials: true }
+      );
+    } catch (err) {}
+  };
+
   useEffect(() => {
     fetchRequest();
   }, []);
@@ -33,7 +44,8 @@ export default function Request() {
         No Requests Found
       </div>
     );
-
+  console.log(requests._id);
+  console.log(requests);
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black py-14 px-4">
       <div className="max-w-3xl mx-auto">
@@ -75,10 +87,16 @@ export default function Request() {
 
               {/* Action Buttons */}
               <div className="flex flex-col gap-2 min-w-[110px]">
-                <button className="btn rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 border-none text-white hover:opacity-90">
+                <button
+                  className="btn rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 border-none text-white hover:opacity-90"
+                  onClick={() => reviewRequest("accepted", user._id)}
+                >
                   Accept
                 </button>
-                <button className="btn rounded-xl bg-neutral-800 border border-neutral-700 text-gray-300 hover:bg-neutral-700 hover:border-neutral-500">
+                <button
+                  className="btn rounded-xl bg-neutral-800 border border-neutral-700 text-gray-300 hover:bg-neutral-700 hover:border-neutral-500"
+                  onClick={() => reviewRequest("rejected", user._id)}
+                >
                   Reject
                 </button>
               </div>
