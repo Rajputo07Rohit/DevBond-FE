@@ -19,7 +19,7 @@ export default function UserCard({ user, profile }) {
         {},
         { withCredentials: true }
       );
-      console.log(res);
+
       dispatch(removeUserFeed(userId));
     } catch (err) {
       console.log(err);
