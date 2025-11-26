@@ -5,9 +5,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { removeUser } from "../utils/userSlice";
 
-// Premium Dark Glassmorphic Navbar matching the login UI
-// Clean • Modern • Gradient Branding • Smooth UI
-
 export default function NavBar() {
   const user = useSelector((store) => store.user);
   const navigate = useNavigate();
@@ -23,25 +20,50 @@ export default function NavBar() {
 
   return (
     <div className="sticky top-0 z-50 w-full backdrop-blur-xl bg-black/20 border-b border-white/10 shadow-xl">
-      <div className="navbar max-w-7xl mx-auto px-4">
-        {/* Left Brand */}
+      <div className="navbar max-w-7xl mx-auto px-6">
+        {/* LEFT - LOGO */}
         <div className="flex-1">
           <Link
             to="/"
-            className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent tracking-wide"
+            className="text-3xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent"
           >
             DevBond
           </Link>
         </div>
 
-        {/* Right Section */}
+        {/* MIDDLE - NAV LINKS */}
+        {user && (
+          <div className="hidden md:flex gap-8 mr-8">
+            <Link
+              to="/"
+              className="text-gray-300 hover:text-purple-400 font-medium transition"
+            >
+              Feed
+            </Link>
+
+            <Link
+              to="/connection"
+              className="text-gray-300 hover:text-purple-400 font-medium transition"
+            >
+              Connections
+            </Link>
+
+            <Link
+              to="/request"
+              className="text-gray-300 hover:text-purple-400 font-medium transition"
+            >
+              Requests
+            </Link>
+          </div>
+        )}
+
+        {/* RIGHT - PROFILE DROPDOWN */}
         {user && (
           <div className="flex items-center gap-4">
             <p className="hidden md:block text-sm text-gray-300">
-              Welcome, <span className="text-purple-400">{user.firstName}</span>
+              Hi, <span className="text-purple-400">{user.firstName}</span>
             </p>
 
-            {/* Avatar Dropdown */}
             <div className="dropdown dropdown-end">
               <div
                 tabIndex={0}
@@ -55,36 +77,30 @@ export default function NavBar() {
 
               <ul
                 tabIndex={0}
-                className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow-lg rounded-xl w-52 bg-neutral-900 border border-white/10"
+                className="menu menu-sm dropdown-content mt-3 z-[1] p-3 shadow-lg rounded-xl w-56 bg-neutral-900 border border-white/10"
               >
                 <li>
                   <Link
-                    to="/profile"
                     className="text-gray-200 hover:text-purple-400"
+                    to="/profile"
                   >
                     Profile
                   </Link>
                 </li>
+
                 <li>
                   <Link
-                    to="/connection"
                     className="text-gray-200 hover:text-purple-400"
+                    to="/settings"
                   >
-                    Connection
+                    Settings
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    to="/request"
-                    className="text-gray-200 hover:text-purple-400"
-                  >
-                    Connection Request
-                  </Link>
-                </li>
+
                 <li>
                   <a
                     onClick={handleLogout}
-                    className="text-red-400 hover:text-red-300"
+                    className="text-red-400 hover:text-red-300 cursor-pointer"
                   >
                     Logout
                   </a>

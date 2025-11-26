@@ -22,13 +22,13 @@ export default function Request() {
   };
 
   const reviewRequest = async (status, _id) => {
-    console.log("clicl", status, _id);
     try {
       const res = await axios.post(
         BASE_URL + `/request/review/${status}/${_id}`,
         {},
         { withCredentials: true }
       );
+      dispatch(removeRequest(_id));
     } catch (err) {}
   };
 
