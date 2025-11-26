@@ -7,7 +7,7 @@ import { removeUserFeed } from "../utils/feedSlice";
 // Premium DevTinder User Card
 // Glassmorphic • Gradient Border • Modern Buttons • Clean Layout
 
-export default function UserCard({ user }) {
+export default function UserCard({ user, profile }) {
   const { _id, firstName, lastName, photoUrl, age, gender, about } = user;
 
   const dispatch = useDispatch();
@@ -53,21 +53,24 @@ export default function UserCard({ user }) {
         <p className="text-sm opacity-80 mb-4 line-clamp-3">{about}</p>
 
         {/* Buttons */}
-        <div className="flex items-center justify-between mt-4">
-          <button
-            className="btn w-1/2 mr-2 rounded-xl bg-neutral-800 border border-neutral-700 text-gray-300 hover:bg-neutral-700 hover:border-neutral-500"
-            onClick={() => handleSendRequest("ignored", _id)}
-          >
-            Ignore
-          </button>
 
-          <button
-            className="btn w-1/2 ml-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 border-none text-white hover:opacity-90"
-            onClick={() => handleSendRequest("interested", _id)}
-          >
-            Interested
-          </button>
-        </div>
+        {!profile && (
+          <div className="flex items-center justify-between mt-4">
+            <button
+              className="btn w-1/2 mr-2 rounded-xl bg-neutral-800 border border-neutral-700 text-gray-300 hover:bg-neutral-700 hover:border-neutral-500"
+              onClick={() => handleSendRequest("ignored", _id)}
+            >
+              Ignore
+            </button>
+
+            <button
+              className="btn w-1/2 ml-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 border-none text-white hover:opacity-90"
+              onClick={() => handleSendRequest("interested", _id)}
+            >
+              Interested
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

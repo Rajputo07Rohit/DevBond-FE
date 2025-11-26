@@ -124,6 +124,7 @@ const EditProfile = ({ user }) => {
         {/* LIVE PREVIEW */}
         <UserCard
           user={{ firstName, lastName, photoUrl, age, gender, about }}
+          profile={true}
         />
       </div>
 
