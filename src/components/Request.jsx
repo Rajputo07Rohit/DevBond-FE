@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { addRequest } from "../utils/requestSlice";
+import { addRequest, removeRequest } from "../utils/requestSlice";
 
 // DevTinder — Connection Requests UI
 // Premium Dark • Glassmorphic • Gradient Accents • Action Buttons
@@ -44,8 +44,7 @@ export default function Request() {
         No Requests Found
       </div>
     );
-  console.log(requests._id);
-  console.log(requests);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black py-14 px-4">
       <div className="max-w-3xl mx-auto">
