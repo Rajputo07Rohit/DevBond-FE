@@ -35,7 +35,7 @@ export default function UserCard({ user, profile }) {
           alt="User"
           className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"></div>
         <div className="absolute bottom-3 left-4 text-white">
           <h2 className="text-2xl font-bold drop-shadow-md">
             {firstName} {lastName}
@@ -64,7 +64,7 @@ export default function UserCard({ user, profile }) {
             </button>
 
             <button
-              className="btn w-1/2 ml-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 border-none text-white hover:opacity-90"
+              className="btn w-1/2 ml-2 rounded-xl bg-linear-to-r from-purple-500 to-pink-500 border-none text-white hover:opacity-90"
               onClick={() => handleSendRequest("interested", _id)}
             >
               Interested

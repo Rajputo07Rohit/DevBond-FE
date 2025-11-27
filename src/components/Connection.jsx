@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnection } from "../utils/connectionSlice";
+import { Link } from "react-router-dom";
 
 // Premium DevTinder Connections UI
 // Dark • Glassmorphic • Gradient Accents • Clean Cards
@@ -35,9 +36,9 @@ export default function Connection() {
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black py-14 px-4">
+    <div className="min-h-screen bg-linear-to-br from-black via-neutral-900 to-black py-14 px-4">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-10 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
+        <h1 className="text-3xl font-bold text-center mb-10 text-transparent bg-clip-text bg-linear-to-r from-purple-400 to-pink-500">
           Your Connections 🤝
         </h1>
 
@@ -74,9 +75,11 @@ export default function Connection() {
               </div>
 
               {/* Chat Button */}
-              <button className="btn rounded-xl bg-linear-to-r from-purple-500 to-pink-500 border-none text-white hover:opacity-90">
-                Message
-              </button>
+              <Link to={"/chat/" + user._id}>
+                <button className="btn rounded-xl bg-linear-to-r from-purple-500 to-pink-500 border-none text-white hover:opacity-90">
+                  Message
+                </button>
+              </Link>
             </div>
           ))}
         </div>
