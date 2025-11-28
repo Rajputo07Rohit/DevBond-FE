@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { createSocketConnection } from "../utils/socket";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import { BASE_URL } from "../utils/constants";
 
 export default function Chat() {
   const { targetUserId } = useParams();
@@ -14,12 +16,39 @@ export default function Chat() {
   const socketRef = useRef(null);
   const bottomRef = useRef(null);
 
-  // Auto scroll to bottom
+  // Format time
+  const formatTime = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+
+  // Scroll bottom
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Init socket connection ONCE
+  // Fetch chat history
+  const fetchChatMessages = async () => {
+    const res = await axios.get(BASE_URL + "/chat/" + targetUserId, {
+      withCredentials: true,
+    });
+
+    const loaded = res.data.messages.map((m) => ({
+      userId: m.senderId._id,
+      firstName: m.senderId.firstName,
+      lastName: m.senderId.lastName,
+      text: m.text,
+      createdAt: m.createdAt,
+    }));
+
+    setMessages(loaded);
+  };
+
+  useEffect(() => {
+    fetchChatMessages();
+  }, [targetUserId]);
+
+  // Init socket once
   useEffect(() => {
     if (!userId) return;
 
@@ -28,44 +57,42 @@ export default function Chat() {
 
     socket.emit("joinChat", { userId, targetUserId });
 
-    // RECEIVE message
+    // Receive message
     socket.on("messageReceived", (msg) => {
-      setMessages((prev) => {
-        const last = prev[prev.length - 1];
+      const cleanMsg = {
+        userId: msg.userId || msg.senderId?._id,
+        firstName: msg.firstName || msg.senderId?.firstName,
+        lastName: msg.lastName || msg.senderId?.lastName,
+        text: msg.text,
+        createdAt: msg.createdAt || new Date().toISOString(),
+      };
 
-        // DUPLICATE FILTER (fixes your bug permanently)
-        if (
-          last &&
-          last.text === msg.text &&
-          last.firstName === msg.firstName &&
-          last.lastName === msg.lastName
-        ) {
-          return prev; // ignore duplicate
-        }
+      // Prevent duplicate for sender
+      if (cleanMsg.userId === userId) return;
 
-        return [...prev, msg];
-      });
+      setMessages((prev) => [...prev, cleanMsg]);
     });
 
     return () => socket.disconnect();
   }, [userId, targetUserId]);
 
-  // SEND message
+  // Send message
   const sendMessage = () => {
     if (!newMessage.trim()) return;
 
     const msg = {
-      userId, // local sender id
+      userId,
       targetUserId,
       firstName: loggedUser.firstName,
       lastName: loggedUser.lastName,
       text: newMessage,
+      createdAt: new Date().toISOString(),
     };
 
-    // ADD instantly
+    // Add locally
     setMessages((prev) => [...prev, msg]);
 
-    // EMIT to socket server
+    // Emit to socket
     socketRef.current.emit("sendMessage", msg);
 
     setNewMessage("");
@@ -74,30 +101,26 @@ export default function Chat() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black text-white p-6">
       <div className="w-full max-w-3xl mx-auto border border-neutral-700 rounded-xl overflow-hidden shadow-xl bg-neutral-900/40 backdrop-blur-xl">
-        {/* HEADER */}
+        {/* Header */}
         <h1 className="p-5 border-b border-neutral-700 text-lg font-semibold bg-neutral-900/40">
           Chat
         </h1>
 
-        {/* MESSAGES */}
-        <div className="flex-1 h-[65vh] overflow-y-scroll p-5 space-y-4">
-          {messages.length === 0 && (
-            <p className="text-center text-gray-400 opacity-70 mt-10">
-              Say Hi 👋 to start the chat
-            </p>
-          )}
-
+        {/* Messages */}
+        <div className="flex-1 h-[65vh] overflow-y-scroll p-5 space-y-6">
           {messages.map((msg, index) => {
-            const isMe =
-              msg.userId === userId || msg.firstName === loggedUser.firstName;
+            const isMe = msg.userId === userId;
 
             return (
               <div
                 key={index}
                 className={`chat ${isMe ? "chat-end" : "chat-start"}`}
               >
-                <div className="chat-header text-sm text-gray-400">
+                <div className="chat-header text-xs text-gray-400 mb-1">
                   {msg.firstName} {msg.lastName}
+                  <span className="ml-2 opacity-70 text-[10px]">
+                    {formatTime(msg.createdAt)}
+                  </span>
                 </div>
 
                 <div
@@ -117,7 +140,7 @@ export default function Chat() {
           <div ref={bottomRef}></div>
         </div>
 
-        {/* INPUT BOX */}
+        {/* Input */}
         <div className="p-4 border-t border-neutral-700 bg-neutral-900/40 flex items-center gap-3">
           <input
             value={newMessage}
