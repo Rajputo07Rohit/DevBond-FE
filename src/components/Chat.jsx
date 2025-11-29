@@ -12,6 +12,8 @@ export default function Chat() {
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [isOnline, setIsOnline] = useState(false);
+  const [lastSeen, setLastSeen] = useState(null);
 
   const socketRef = useRef(null);
   const bottomRef = useRef(null);
@@ -22,52 +24,78 @@ export default function Chat() {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
-  // Scroll bottom
+  // Format last seen
+  const formatLastSeen = (timestamp) => {
+    return new Date(timestamp).toLocaleString();
+  };
+
+  // Auto scroll to bottom on new messages
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Fetch chat history
+  // Fetch previous chat
   const fetchChatMessages = async () => {
-    const res = await axios.get(BASE_URL + "/chat/" + targetUserId, {
-      withCredentials: true,
-    });
+    try {
+      const res = await axios.get(BASE_URL + "/chat/" + targetUserId, {
+        withCredentials: true,
+      });
 
-    const loaded = res.data.messages.map((m) => ({
-      userId: m.senderId._id,
-      firstName: m.senderId.firstName,
-      lastName: m.senderId.lastName,
-      text: m.text,
-      createdAt: m.createdAt,
-    }));
+      const loaded = res.data.messages.map((m) => ({
+        userId: m.senderId._id,
+        firstName: m.senderId.firstName,
+        lastName: m.senderId.lastName,
+        text: m.text,
+        createdAt: m.createdAt,
+      }));
 
-    setMessages(loaded);
+      setMessages(loaded);
+    } catch (err) {
+      console.log("Error loading chat:", err);
+    }
   };
 
   useEffect(() => {
     fetchChatMessages();
   }, [targetUserId]);
 
-  // Init socket once
+  // SOCKET LOGIC (online status + messages)
   useEffect(() => {
     if (!userId) return;
 
     const socket = createSocketConnection();
     socketRef.current = socket;
 
+    // Join chat room
     socket.emit("joinChat", { userId, targetUserId });
 
-    // Receive message
+    // Handle online event
+    socket.on("userOnline", (id) => {
+      if (id === targetUserId) {
+        setIsOnline(true);
+      }
+    });
+
+    // Handle offline event
+    socket.on("userOffline", ({ userId: uid, lastSeen }) => {
+      if (uid === targetUserId) {
+        setIsOnline(false);
+        setLastSeen(lastSeen);
+      }
+    });
+
+    // Receive new message
     socket.on("messageReceived", (msg) => {
+      // Clean format
       const cleanMsg = {
-        userId: msg.userId || msg.senderId?._id,
-        firstName: msg.firstName || msg.senderId?.firstName,
-        lastName: msg.lastName || msg.senderId?.lastName,
+        userId: msg.userId,
+        firstName: msg.firstName,
+        lastName: msg.lastName,
         text: msg.text,
         createdAt: msg.createdAt || new Date().toISOString(),
       };
 
-      // Prevent duplicate for sender
+      // Prevent duplicate if it's our own message
       if (cleanMsg.userId === userId) return;
 
       setMessages((prev) => [...prev, cleanMsg]);
@@ -76,7 +104,7 @@ export default function Chat() {
     return () => socket.disconnect();
   }, [userId, targetUserId]);
 
-  // Send message
+  // SEND message
   const sendMessage = () => {
     if (!newMessage.trim()) return;
 
@@ -89,10 +117,10 @@ export default function Chat() {
       createdAt: new Date().toISOString(),
     };
 
-    // Add locally
+    // Add instantly in UI
     setMessages((prev) => [...prev, msg]);
 
-    // Emit to socket
+    // Emit to server
     socketRef.current.emit("sendMessage", msg);
 
     setNewMessage("");
@@ -101,12 +129,22 @@ export default function Chat() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black text-white p-6">
       <div className="w-full max-w-3xl mx-auto border border-neutral-700 rounded-xl overflow-hidden shadow-xl bg-neutral-900/40 backdrop-blur-xl">
-        {/* Header */}
-        <h1 className="p-5 border-b border-neutral-700 text-lg font-semibold bg-neutral-900/40">
-          Chat
-        </h1>
+        {/* HEADER */}
+        <div className="p-5 border-b border-neutral-700 bg-neutral-900/40">
+          <div className="text-lg font-semibold">Chat</div>
 
-        {/* Messages */}
+          {isOnline ? (
+            <p className="text-green-400 text-xs mt-1">● Online</p>
+          ) : lastSeen ? (
+            <p className="text-gray-400 text-xs mt-1">
+              Last seen: {formatLastSeen(lastSeen)}
+            </p>
+          ) : (
+            <p className="text-gray-500 text-xs mt-1">Offline</p>
+          )}
+        </div>
+
+        {/* MESSAGES */}
         <div className="flex-1 h-[65vh] overflow-y-scroll p-5 space-y-6">
           {messages.map((msg, index) => {
             const isMe = msg.userId === userId;
@@ -118,7 +156,7 @@ export default function Chat() {
               >
                 <div className="chat-header text-xs text-gray-400 mb-1">
                   {msg.firstName} {msg.lastName}
-                  <span className="ml-2 opacity-70 text-[10px]">
+                  <span className="ml-2 text-[10px] opacity-70">
                     {formatTime(msg.createdAt)}
                   </span>
                 </div>
@@ -140,7 +178,7 @@ export default function Chat() {
           <div ref={bottomRef}></div>
         </div>
 
-        {/* Input */}
+        {/* INPUT BOX */}
         <div className="p-4 border-t border-neutral-700 bg-neutral-900/40 flex items-center gap-3">
           <input
             value={newMessage}
